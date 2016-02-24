@@ -1,7 +1,7 @@
 const debug = require('debug')('second-screen');
 const socketio = require('socket.io');
 const hashpool = require('hashpool');
-const messageTypes = require('../message-types');
+const messageTypes = require('./message-types');
 
 module.exports = SocketScreen;
 
