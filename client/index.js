@@ -37,6 +37,8 @@ function SocketScreenClient(options) {
 
   }
 
+  echo('connect');
+  echo('disconnect');
   echo('pair');
   echo('unpair');
   echo('update');
