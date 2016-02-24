@@ -2,7 +2,7 @@
   "name": "socket-screen",
   "version": "0.0.4",
   "description": "a small namespaced socket.io lib for second screen input",
-  "main": "src/serve.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "node test/index.js"
   },
