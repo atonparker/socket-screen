@@ -5,12 +5,24 @@ var messageTypes = require('../server/message-types');
 
 module.exports = SocketScreenClient;
 
-function SocketScreenClient(io) {
+function SocketScreenClient(options) {
+
+  if (options.io) {
+
+    var io = options.io;
+    var uri = options.uri;
+
+  } else {
+
+    io = options;
+    uri = window.location.origin;
+
+  }
 
   if (io === undefined) throw new Error('You must provide a socket.io server.');
 
   var client = Object.create(emitter.prototype);
-  var socket = io.of('/socket-screen');
+  var socket = io.connect(uri + '/socket-screen');
 
   function echo(event) {
 
