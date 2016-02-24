@@ -1,3 +1,5 @@
+'use strict';
+
 const debug = require('debug')('second-screen');
 const socketio = require('socket.io');
 const hashpool = require('hashpool');
@@ -13,13 +15,16 @@ function SocketScreen(io) {
   if (io === undefined) throw new Error('You must provide a socket.io server.');
 
   const namespace = io.of('/socket-screen');
-  namespace.on('connection', connection);
+  namespace.on('connection', connection(io));
 
 }
 
-function connection(socket) {
+const connection = io => socket => {
 
   let session = null;
+
+  // Helper function to count the number of clients in the room.
+  const nclients = (session) => io.sockets.adapter.rooms[session];
 
   debug('socket %s', socket.id);
   debug('  connected');
@@ -59,8 +64,11 @@ function connection(socket) {
     socket.join(session);
     debug('  joined session %s', session);
 
-    let nclients = io.sockets.adapter.rooms[session];
-    if (nclients > 1) socket.broadcast.to(session).emit(messageTypes.PAIR);
+    if (nclients(session) > 1) {
+
+      socket.broadcast.to(session).emit(messageTypes.PAIR);
+
+    }
 
     respond({ ok: true });
 
@@ -69,7 +77,7 @@ function connection(socket) {
   // Update
   // ------
 
-  socket.on(messageTypes.UPDATE, (message, respond) => {
+  socket.on(messageTypes.UPDATE, (message) => {
 
     debug('socket %s', socket.id);
     debug('  update %s', JSON.stringify(message));
@@ -88,8 +96,15 @@ function connection(socket) {
     socket.leave(session);
     debug('  left session %s', session);
 
-    let nclients = io.sockets.adapter.rooms[session];
-    if (nclients > 0) socket.broadcast.to(session).emit(messageTypes.UNPAIR);
+    if (nclients(session) > 0) {
+
+      socket.broadcast.to(session).emit(messageTypes.UNPAIR);
+
+    } else {
+
+      sesspool.free(session);
+
+    }
 
   });
 
@@ -103,9 +118,15 @@ function connection(socket) {
     socket.leave(session);
     debug('  disconnected', session);
 
-    let nclients = io.sockets.adapter.rooms[session];
-    if (nclients > 0) socket.broadcast.to(session).emit(messageTypes.UNPAIR);
+    if (nclients(session) > 0) {
 
+      socket.broadcast.to(session).emit(messageTypes.UNPAIR);
+
+    } else {
+
+      sesspool.free(session);
+
+    }
 
   });
 
