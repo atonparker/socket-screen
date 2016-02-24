@@ -28,7 +28,7 @@ function SocketScreenClient(options) {
 
     var listener = function() {
 
-      var args = [ event ].push(arguments);
+      var args = [ event ].concat(arguments);
       client.emit.apply(null, args);
 
     };
