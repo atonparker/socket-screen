@@ -29,7 +29,7 @@ function SocketScreenClient(options) {
     var listener = function() {
 
       var args = Array.prototype.slice.call(arguments);
-      client.emit.apply(null, [ event].concat(args));
+      client.emit.apply(client, [ event].concat(args));
 
     };
 
