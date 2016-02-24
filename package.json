@@ -1,6 +1,6 @@
 {
   "name": "socket-screen",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "a small namespaced socket.io lib for second screen input",
   "main": "index.js",
   "scripts": {
