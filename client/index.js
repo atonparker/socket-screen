@@ -1,7 +1,7 @@
 'use strict';
 
 var emitter = require('component-emitter');
-var messageTypes = require('../message-types');
+var messageTypes = require('../server/message-types');
 
 module.exports = SocketScreenClient;
 
