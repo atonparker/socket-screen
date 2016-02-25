@@ -24,42 +24,57 @@ function SocketScreenClient(options) {
   var client = Object.create(emitter.prototype);
   var socket = io.connect(uri + '/socket-screen');
 
-  function echo(event) {
+  // Socket Listeners
 
-    var listener = function() {
+  socket.on('connect', function() {
 
-      var args = Array.prototype.slice.call(arguments);
-      client.emit.apply(client, [ event ].concat(args));
+    client.emit('connect');
 
-    };
+  });
 
-    socket.on(event, listener);
+  socket.on('disconnect', function() {
 
-  }
+    client.emit('disconnect');
 
-  echo('connect');
-  echo('disconnect');
-  echo('pair');
-  echo('unpair');
-  echo('update');
+  });
+
+  socket.on(messageTypes.SESSION_UPDATE, function(message) {
+
+    client.emit('update', message);
+
+  });
+
+  socket.on(messageTypes.SESSION_PAIR, function() {
+
+    client.emit('pair');
+
+  })
+
+  socket.on(messageTypes.SESSION_UNPAIR, function() {
+
+    client.emit('unpair');
+
+  });
+
+  // Client Actions
 
   client.create = function(cb) {
 
-    socket.emit(messageTypes.SESSION_CREATE, function(res) { cb(res.error, res.session); });
+    socket.emit(messageTypes.SESSION_CREATE, function(response) { cb(response.error, response.session); });
 
   };
 
   client.join = function(session, cb) {
 
     // TODO prohibit (or support?) joining multiple sessions
-    socket.emit(messageTypes.SESSION_JOIN, session, function(res) { cb(res.error); });
+    socket.emit(messageTypes.SESSION_JOIN, session, function(response) { cb(response.error); });
 
   };
 
   client.leave = function(cb) {
 
     // TODO prohibit (or support?) leaving some but not all sessions
-    socket.emit(messageTypes.SESSION_LEAVE, function(res) { cb(res.error); });
+    socket.emit(messageTypes.SESSION_LEAVE, function(response) { cb(response.error); });
 
   };
 
