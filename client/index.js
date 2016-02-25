@@ -29,7 +29,7 @@ function SocketScreenClient(options) {
     var listener = function() {
 
       var args = Array.prototype.slice.call(arguments);
-      client.emit.apply(client, [ event].concat(args));
+      client.emit.apply(client, [ event ].concat(args));
 
     };
 
@@ -45,19 +45,19 @@ function SocketScreenClient(options) {
 
   client.create = function(cb) {
 
-    socket.emit(messageTypes.CREATE, function (res) { cb(res.error, res.session); });
+    socket.emit(messageTypes.SESSION_CREATE, function(res) { cb(res.error, res.session); });
 
   };
 
   client.join = function(cb) {
 
-    socket.emit(messageTypes.JOIN, function (res) { cb(res.error); });
+    socket.emit(messageTypes.SESSION_JOIN, function(res) { cb(res.error); });
 
   };
 
   client.leave = function(cb) {
 
-    socket.emit(messageTypes.LEAVE, function (res) { cb(res.error); });
+    socket.emit(messageTypes.SESSION_EAVE, function(res) { cb(res.error); });
 
   };
 

@@ -17,11 +17,14 @@ function SocketScreen(io) {
   const namespace = io.of('/socket-screen');
   namespace.on('connection', connection(io));
 
+  debug('created second-screen namespace');
+
 }
 
 const connection = io => socket => {
 
   let session = null;
+
 
   // Helper function to count the number of clients in the room.
   const nclients = (session) => io.sockets.adapter.rooms[session];
@@ -32,7 +35,7 @@ const connection = io => socket => {
   // Create
   // ------
 
-  socket.on(messageTypes.CREATE, (respond) => {
+  socket.on(messageTypes.SESSION_CREATE, (respond) => {
 
     debug('socket %s', socket.id);
 
@@ -57,7 +60,7 @@ const connection = io => socket => {
   // Join
   // ----
 
-  socket.on(messageTypes.JOIN, (session, respond) => {
+  socket.on(messageTypes.SESSION_JOIN, (session, respond) => {
 
     debug('socket %s', socket.id);
 
@@ -66,7 +69,7 @@ const connection = io => socket => {
 
     if (nclients(session) > 1) {
 
-      socket.broadcast.to(session).emit(messageTypes.PAIR);
+      socket.broadcast.to(session).emit(messageTypes.SESSION_PAIR);
 
     }
 
@@ -77,19 +80,19 @@ const connection = io => socket => {
   // Update
   // ------
 
-  socket.on(messageTypes.UPDATE, (message) => {
+  socket.on(messageTypes.SESSION_UPDATE, (message) => {
 
     debug('socket %s', socket.id);
     debug('  update %s', JSON.stringify(message));
 
-    socket.broadcast.to(session).emit(messageTypes.UPDATE, message);
+    socket.broadcast.to(session).emit(messageTypes.SESSION_UPDATE, message);
 
   });
 
   // Leave
   // -----
 
-  socket.on(messageTypes.LEAVE, () => {
+  socket.on(messageTypes.SESSION_LEAVE, () => {
 
     debug('socket %s', socket.id);
 
@@ -98,7 +101,7 @@ const connection = io => socket => {
 
     if (nclients(session) > 0) {
 
-      socket.broadcast.to(session).emit(messageTypes.UNPAIR);
+      socket.broadcast.to(session).emit(messageTypes.SESSION_UNPAIR);
 
     } else {
 
@@ -120,7 +123,7 @@ const connection = io => socket => {
 
     if (nclients(session) > 0) {
 
-      socket.broadcast.to(session).emit(messageTypes.UNPAIR);
+      socket.broadcast.to(session).emit(messageTypes.SESSION_UNPAIR);
 
     } else {
 
