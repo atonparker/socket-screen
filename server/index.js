@@ -25,7 +25,6 @@ const connection = namespace => socket => {
 
   let session = null;
 
-
   // Helper function to count the number of clients in the room.
   const nclients = (session) => {
 
@@ -65,16 +64,19 @@ const connection = namespace => socket => {
   // Join
   // ----
 
-  socket.on(messageTypes.SESSION_JOIN, (session, respond) => {
+  socket.on(messageTypes.SESSION_JOIN, (message, respond) => {
 
     debug('socket %s', socket.id);
+
+    // Keep a reference to the session, until they leave or disconnect.
+    session = message;
 
     socket.join(session);
     debug('  joined session %s', session);
 
     if (nclients(session) > 1) {
 
-      socket.to(session).emit(messageTypes.SESSION_PAIR);
+      namespace.to(session).emit(messageTypes.SESSION_PAIR);
 
     }
 
@@ -90,7 +92,7 @@ const connection = namespace => socket => {
     debug('socket %s', socket.id);
     debug('  update %s', JSON.stringify(message));
 
-    socket.broadcast.to(session).emit(messageTypes.SESSION_UPDATE, message);
+    socket.broadcast.to(session).emit(messageTypes.SESSION_UPDATE);
 
   });
 
@@ -106,13 +108,15 @@ const connection = namespace => socket => {
 
     if (nclients(session) > 0) {
 
-      socket.to(session).emit(messageTypes.SESSION_UNPAIR);
+      namespace.to(session).emit(messageTypes.SESSION_UNPAIR);
 
     } else {
 
       sesspool.free(session);
 
     }
+
+    session = null;
 
   });
 
@@ -128,13 +132,15 @@ const connection = namespace => socket => {
 
     if (nclients(session) > 0) {
 
-      socket.broadcast.to(session).emit(messageTypes.SESSION_UNPAIR);
+      namespace.to(session).emit(messageTypes.SESSION_UNPAIR);
 
     } else {
 
       sesspool.free(session);
 
     }
+
+    session = null;
 
   });
 
