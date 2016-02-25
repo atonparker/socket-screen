@@ -49,15 +49,17 @@ function SocketScreenClient(options) {
 
   };
 
-  client.join = function(cb) {
+  client.join = function(session, cb) {
 
-    socket.emit(messageTypes.SESSION_JOIN, function(res) { cb(res.error); });
+    // TODO prohibit (or support?) joining multiple sessions
+    socket.emit(messageTypes.SESSION_JOIN, session, function(res) { cb(res.error); });
 
   };
 
   client.leave = function(cb) {
 
-    socket.emit(messageTypes.SESSION_EAVE, function(res) { cb(res.error); });
+    // TODO prohibit (or support?) leaving some but not all sessions
+    socket.emit(messageTypes.SESSION_LEAVE, function(res) { cb(res.error); });
 
   };
 
