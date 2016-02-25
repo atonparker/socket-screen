@@ -42,7 +42,7 @@ ss.on('update', (message) => {
 const io = require('socket.io-client');
 const ss = require('socket-screen/client')(io);
 
-let session = askUserForSessionID();
+let session = prompt("What's your session?");
 
 ss.join(session, (err, session) => {
 

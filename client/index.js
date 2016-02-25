@@ -71,6 +71,13 @@ function SocketScreenClient(options) {
 
   };
 
+  client.update = function(message, cb) {
+
+    // TODO prohibit (or support?) leaving some but not all sessions
+    socket.emit(messageTypes.SESSION_UPDATE, message, function(response) { cb(response.error); });
+
+  };
+
   client.leave = function(cb) {
 
     // TODO prohibit (or support?) leaving some but not all sessions

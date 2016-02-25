@@ -1,3 +1,4 @@
+// TODO investigate overhead of emitting longer/shorter event names
 module.exports = {
 
   SESSION_CREATE: 'session_create',
