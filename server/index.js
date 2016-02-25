@@ -15,19 +15,19 @@ function SocketScreen(io) {
   if (io === undefined) throw new Error('You must provide a socket.io server.');
 
   const namespace = io.of('/socket-screen');
-  namespace.on('connection', connection(io));
+  namespace.on('connection', connection(namespace));
 
   debug('created second-screen namespace');
 
 }
 
-const connection = io => socket => {
+const connection = namespace => socket => {
 
   let session = null;
 
 
   // Helper function to count the number of clients in the room.
-  const nclients = (session) => io.sockets.adapter.rooms[session];
+  const nclients = (session) => Object.keys(namespace.adapter.rooms[session]).length;
 
   debug('socket %s', socket.id);
   debug('  connected');
