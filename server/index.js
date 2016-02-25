@@ -27,7 +27,12 @@ const connection = namespace => socket => {
 
 
   // Helper function to count the number of clients in the room.
-  const nclients = (session) => Object.keys(namespace.adapter.rooms[session]).length;
+  const nclients = (session) => {
+
+    let room = namespace.adapter.rooms[session];
+    return room ? Object.keys(room).length : 0;
+
+  }
 
   debug('socket %s', socket.id);
   debug('  connected');
