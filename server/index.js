@@ -74,7 +74,7 @@ const connection = namespace => socket => {
 
     if (nclients(session) > 1) {
 
-      socket.broadcast.to(session).emit(messageTypes.SESSION_PAIR);
+      socket.to(session).emit(messageTypes.SESSION_PAIR);
 
     }
 
@@ -106,7 +106,7 @@ const connection = namespace => socket => {
 
     if (nclients(session) > 0) {
 
-      socket.broadcast.to(session).emit(messageTypes.SESSION_UNPAIR);
+      socket.to(session).emit(messageTypes.SESSION_UNPAIR);
 
     } else {
 
