@@ -92,7 +92,7 @@ const connection = namespace => socket => {
     debug('socket %s', socket.id);
     debug('  update %s', JSON.stringify(message));
 
-    socket.broadcast.to(session).emit(messageTypes.SESSION_UPDATE);
+    socket.broadcast.to(session).emit(messageTypes.SESSION_UPDATE, message);
 
   });
 
